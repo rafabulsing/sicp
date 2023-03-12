@@ -31,7 +31,9 @@ Here, no state is being passed to each procedure call. The state for what multip
 720 
 ```
 
-Conversely, we could multiply 1 by 2, then by 3, then 4, and so on until reaching $ n $. We would need some variables to hold that running product, and how many steps we've calculated already:
+The interpreter has to keep track of a chain of *deferred operations*, which grows linearly with the size of the input. This kind of process is called a *linear recursive process*.
+
+Conversely, we could multiply 1 by 2, then by 3, then 4, and so on until reaching $ n $. We would need some variables to hold that running product, and how many steps we've calculated already. Those variables would track the *state* of the running operation.
 
 ```lisp
 (define (factorial n)
@@ -58,3 +60,16 @@ Here's the same operation from before, visualized via substitution model:
 (fact-iter 720 7 6)
 720
 ```
+
+All the information necessary to keep on with the operation is encapsulated by the state variables, and there are no deferred operations for the interpreter to track. This is called a *linear iterative process*.
+
+#### Recursive process vs Recursive procedure
+
+Notice the difference between a *recursive process* and a *recursive procedure*. `fact-iter` is defined as a function of itself, so it's a recursive procedure, but in this case this recursion is really just a different way to express a loop which could be easily converted to a `for` or `while` block in another language.
+
+Because of that, it's considered to be an iterative process, not a recursive one.
+
+Many languages are not able to distinguish between those two kinds of process in a recursive procedure, making it so that they always consume increasing amounts of memory even if the process is iterative.
+
+Some languages (including Scheme) are able to detect this difference though, and optimize iterative processes to execute in constant space even when described by a recursive procedures. This optimization is called *tail recursion*.
+
